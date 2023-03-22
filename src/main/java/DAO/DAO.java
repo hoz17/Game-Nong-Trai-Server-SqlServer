@@ -1,4 +1,4 @@
-package Main;
+package DAO;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
@@ -6,31 +6,31 @@ import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class Main {
+public class DAO {
     public static Connection conn;
 
-    public static void main(String[] args) {
-        Connection1();
+    public DAO() {
+
     }
 
-    public static void Connection1() {
+    public static void connection() {
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
         ds.setPassword("123");
         ds.setServerName("DARJEELING\\SQLEXPRESS");
         ds.setPortNumber(1433);
-        ds.setDatabaseName("Farm");
+        ds.setDatabaseName("gamenongtrai");
         ds.setEncrypt(false);
 
         try {
             conn = ds.getConnection();
-            System.out.println("Success");
+            System.out.println("Kết nối database thành công !");
             System.out.println(conn.getCatalog());
         } catch (SQLServerException throwables) {
             throwables.printStackTrace();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-            System.out.println("Failed");
+            System.out.println("Kết nối database thất bại !");
 
         }
     }

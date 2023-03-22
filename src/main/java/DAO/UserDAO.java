@@ -1,20 +1,18 @@
 package DAO;
 
-import Main.Main;
 import Model.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDAO extends Main {
+public class UserDAO extends DAO {
     public UserDAO() {
         super();
     }
 
     public User verifyUser(User user) throws SQLException {
         try {
-
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT *\n"
                     + "FROM user\n"
                     + "WHERE username = ?\n"
@@ -28,7 +26,6 @@ public class UserDAO extends Main {
             }
 
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
@@ -36,8 +33,8 @@ public class UserDAO extends Main {
 
     public void addUser(User user) {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO user(username, password)\n"
-                    + "VALUES(?,?)");
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO user\n"
+                    + "VALUES(?,?,?,?,?,?,?)");
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             System.out.println(preparedStatement);
@@ -46,4 +43,22 @@ public class UserDAO extends Main {
             ex.printStackTrace();
         }
     }
+
+    public boolean checkDuplicated(String username) {
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM user WHERE username = ?");
+            preparedStatement.setString(1, username);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

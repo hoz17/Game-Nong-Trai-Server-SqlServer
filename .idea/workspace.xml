@@ -5,13 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="17a837aa-1b4b-4946-b57c-8ed0faccfa3d" name="Changes" comment="create project">
-      <change afterPath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Main/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Main/Server.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Main/ServerThread.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Main/ServerThreadBus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Model/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/DAO/DAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Model/Inventory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Model/Land.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Main/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/ServerThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Model/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +48,8 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;
   }
 }</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
