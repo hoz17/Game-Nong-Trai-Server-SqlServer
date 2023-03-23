@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 
-import static com.sun.java.util.jar.pack.Attribute.parseInt;
+
 
 public class ServerThread implements Runnable {
     private User user;
@@ -65,24 +65,24 @@ public class ServerThread implements Runnable {
             is = new BufferedReader(new InputStreamReader(socketOfServer.getInputStream()));
             os = new BufferedWriter(new OutputStreamWriter(socketOfServer.getOutputStream()));
 //            System.out.println("Khời động luông mới thành công, ID là: " + clientNumber);
-            write("server-send-id" + "," + this.clientNumber);
+            write("server-send-id" + "=" + this.clientNumber);
             String message;
             while (!isClosed) {
                 message = is.readLine();
                 if (message == null) {
                     break;
                 }
-                String[] messageSplit = message.split(",");
+                String[] messageSplit = message.split("=");
                 //Xác minh
                 if (messageSplit[0].equals("client-verify")) {
 //                    System.out.println(message);
                     User user1 = userDAO.verifyUser(new User(messageSplit[1], messageSplit[2]));
                     if (user1 == null)
-                        write("wrong-user," + messageSplit[1] + "," + messageSplit[2]);
+                        write("wrong-user=" + messageSplit[1] + "=" + messageSplit[2]);
                     else
 //                        if (!user1.getIsOnline() && !userDAO.checkIsBanned(user1))
                     {
-                        write("login-success," + getStringFromUser(user1));
+                        write("login-success=" + getStringFromUser(user1));
                         this.user = user1;
 //                        userDAO.updateToOnline(this.user.getID());
 //                        Server.serverThreadBus.boardCast(clientNumber, "chat-server," + user1.getNickname() + " đang online");
@@ -96,7 +96,7 @@ public class ServerThread implements Runnable {
                 //Xử lý đăng kí
                 if(messageSplit[0].equals("register")){
                     boolean checkdup = userDAO.checkDuplicated(messageSplit[1]);
-                    if(checkdup) write("duplicate-username,");
+                    if(checkdup) write("duplicate-username=");
                     else{
                         User userRegister = new User(messageSplit[1], messageSplit[2], messageSplit[3],Integer.parseInt(messageSplit[4]),Integer.parseInt(messageSplit[5]),Integer.parseInt(messageSplit[6]));
                         userDAO.addUser(userRegister);
@@ -105,9 +105,12 @@ public class ServerThread implements Runnable {
                         //userDAO.updateToOnline(this.user.getID());
                         //Server.serverThreadBus.boardCast(clientNumber, "chat-server,"+this.user.getUsername()+" đang online");
                         System.out.println("[" + this.user.getUserID() + "] " + this.user.getUsername() + " đang online");
-                        write("login-success,"+getStringFromUser(this.user));
+                        write("login-success="+getStringFromUser(this.user));
                     }
                 }
+                //
+
+
 
 
             }
@@ -134,8 +137,8 @@ public class ServerThread implements Runnable {
 
 
     public String getStringFromUser(User user1) {
-        return "" + user1.getUserID() + "," + user1.getUsername()
-                + "," + user1.getPassword() + "";
+        return "" + user1.getUserID() + "=" + user1.getUsername()
+                + "=" + user1.getPassword() + "";
     }
 
     public void write(String message) throws IOException {
