@@ -14,7 +14,7 @@ public class UserDAO extends DAO {
     public User verifyUser(User user) throws SQLException {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT *\n"
-                    + "FROM user\n"
+                    + "FROM player\n"
                     + "WHERE Username = ?\n"
                     + "AND Password = ?");
             preparedStatement.setString(1, user.getUsername());
@@ -22,7 +22,7 @@ public class UserDAO extends DAO {
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6), );
+                return new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
             }
 
         } catch (SQLException e) {
@@ -33,7 +33,7 @@ public class UserDAO extends DAO {
 
     public void addUser(User user) {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO user\n"
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO player\n"
                     + "VALUES(?,?,?,?,?,?)");
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
@@ -82,8 +82,8 @@ public class UserDAO extends DAO {
                 PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO inventory VALUES (?,?,?,?)");
                 preparedStatement.setInt(1, user.getUserID());
                 preparedStatement.setInt(2, i);
-                preparedStatement.setInt(3,0);
-                preparedStatement.setInt(4,0);
+                preparedStatement.setInt(3, 0);
+                preparedStatement.setInt(4, 0);
                 preparedStatement.executeUpdate();
             }
 
@@ -94,7 +94,7 @@ public class UserDAO extends DAO {
 
     public boolean checkDuplicated(String username) {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM user WHERE Username = ?");
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM player WHERE Username = ?");
             preparedStatement.setString(1, username);
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
