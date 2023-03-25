@@ -46,4 +46,18 @@ public class LandDAO extends DAO {
         }
         return null;
     }
+
+    public int harvest(int playerID, int slot){
+        int execute = 0;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = ? WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1, -1);
+            preparedStatement.setInt(2,playerID);
+            preparedStatement.setInt(3,slot);
+            execute = preparedStatement.executeUpdate();
+        }catch  (SQLException e){
+            e.printStackTrace();
+        }
+        return execute;
+    }
 }

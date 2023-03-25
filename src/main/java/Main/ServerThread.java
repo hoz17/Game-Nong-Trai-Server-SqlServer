@@ -149,9 +149,9 @@ public class ServerThread implements Runnable {
                 if (messageSplit[0].equals("buy-farmland")) {
                     int slot = Integer.parseInt(messageSplit[1]);
                     int newMoney = this.user.getMoney() - this.land.getLandPrice(slot);
-                    int execute = landDAO.buyFarmland(this.user.getUserID(), slot);
+                    int landExecute = landDAO.buyFarmland(this.user.getUserID(), slot);
                     int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
-                    if (execute == 1 && moneyExecute == 1) {
+                    if (landExecute == 1 && moneyExecute == 1) {
                         write("buy-farmland-complete=" + slot + "=" + newMoney);
                         this.land.setState(slot, 1);
                         this.user.setMoney(newMoney);
@@ -166,7 +166,7 @@ public class ServerThread implements Runnable {
                     int newMoney = this.user.getMoney() - (Integer.parseInt(messageSplit[2]) * this.crop.getCropBuyPrice(cropID));
                     int inventoryExecute = inventoryDAO.updateSeed(this.user.getUserID(), cropID, newSeedAmount);
                     int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
-                    if (inventoryExecute == moneyExecute) {
+                    if (inventoryExecute == 1 && moneyExecute == 1) {
                         this.user.setMoney(newMoney);
                         this.inventory.setSeedAmount(cropID, newSeedAmount);
                         write("buy-seed-complete=" + cropID + "=" + newSeedAmount + "=" + newMoney);
@@ -181,7 +181,7 @@ public class ServerThread implements Runnable {
                     int newMoney = this.user.getMoney() + (Integer.parseInt(messageSplit[2]) * this.crop.getCropSellPrice(cropID));
                     int inventoryExecute = inventoryDAO.updateCrop(this.user.getUserID(), cropID, newCropAmount);
                     int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
-                    if (inventoryExecute == moneyExecute) {
+                    if (inventoryExecute == 1 && moneyExecute == 1) {
                         this.user.setMoney(newMoney);
                         this.inventory.setCropAmount(cropID, newCropAmount);
                         write("sell-seed-complete=" + cropID + "=" + newCropAmount + "=" + newMoney);
@@ -203,6 +203,14 @@ public class ServerThread implements Runnable {
                     int slot = Integer.parseInt(messageSplit[2]);
                     int newCropAmount = this.inventory.getCropAmount(cropID) + 1;
                     int inventoryExecute = inventoryDAO.updateCrop(this.user.getUserID(), cropID, newCropAmount);
+                    int landExecute = landDAO.harvest(this.user.getUserID(), slot);
+                    if (inventoryExecute == 1 && landExecute == 1) {
+                        this.inventory.setCropAmount(cropID, newCropAmount);
+                        this.land.setCropID(slot, -1);
+                        write("harvest-complete="+slot+"="+newCropAmount);
+                    }else {
+                        System.out.println("Lỗi database phần thu hoạch");
+                    }
                 }
                 //Xử lý phá cây
                 if (messageSplit[0].equals("trample")) {
