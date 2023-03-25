@@ -119,5 +119,48 @@ public class UserDAO extends DAO {
         }
         return false;
     }
+    public int waterPlant(int userID, int waterlevel, int slot ){
+        int execute =0;
+        try{
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Water_level = ? WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1,waterlevel);
+            preparedStatement.setInt(2,userID);
+            preparedStatement.setInt(3,slot);
+            execute = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return execute;
+    }
+
+    public int trample(int userID, int cropID, int slot){
+        int exe =0;
+        try{
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = -1 WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1,cropID);
+            preparedStatement.setInt(2,userID);
+            preparedStatement.setInt(3,slot);
+            exe = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return exe;
+    }
+    public int plantTree(int userID, int cropID, int slot){
+        int exe =0;
+        try{
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID =  WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1,cropID);
+            preparedStatement.setInt(2,userID);
+            preparedStatement.setInt(3,slot);
+            exe = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return exe;
+    }
 
 }
