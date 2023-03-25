@@ -164,9 +164,9 @@ public class ServerThread implements Runnable {
                     int cropID = Integer.parseInt(messageSplit[1]);
                     int newSeedAmount = Integer.parseInt(messageSplit[2]) + this.inventory.getSeedAmount(cropID);
                     int newMoney = this.user.getMoney() - (Integer.parseInt(messageSplit[2]) * this.crop.getCropBuyPrice(cropID));
-                    int execute = inventoryDAO.buySeed(this.user.getUserID(), cropID, newSeedAmount);
+                    int inventoryExecute = inventoryDAO.buySeed(this.user.getUserID(), cropID, newSeedAmount);
                     int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
-                    if (execute == 1 && moneyExecute == 1) {
+                    if (inventoryExecute == moneyExecute) {
                         this.user.setMoney(newMoney);
                         this.inventory.setSeedAmount(cropID, newSeedAmount);
                         write("buy-seed-complete=" + cropID + "=" + newSeedAmount + "=" + newMoney);
@@ -176,7 +176,18 @@ public class ServerThread implements Runnable {
                 }
                 //Xử lý bán rau củ
                 if (messageSplit[0].equals("sell-crop")) {
-                    
+                    int cropID = Integer.parseInt(messageSplit[1]);
+                    int newCropAmount = this.inventory.getCropAmount(cropID) - Integer.parseInt(messageSplit[2]);
+                    int newMoney = this.user.getMoney() + (Integer.parseInt(messageSplit[2]) * this.crop.getCropSellPrice(cropID));
+                    int inventoryExecute = inventoryDAO.sellCrop(this.user.getUserID(), cropID, newCropAmount);
+                    int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
+                    if (inventoryExecute == moneyExecute) {
+                        this.user.setMoney(newMoney);
+                        this.inventory.setCropAmount(cropID, newCropAmount);
+                        write("sell-seed-complete=" + cropID + "=" + newCropAmount + "=" + newMoney);
+                    } else {
+                        System.out.println("Lỗi database phần bán rau củ");
+                    }
                 }
                 //Xử lý trồng cây
                 if (messageSplit[0].equals("plant")) {
