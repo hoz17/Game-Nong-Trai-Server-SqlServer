@@ -145,6 +145,17 @@ public class ServerThread implements Runnable {
                         write("login-success=" + getStringFromUser(this.user));
                     }
                 }
+                //Xử lý gửi dữ liệu người chơi
+                if (messageSplit[0].equals("load-player-data")) {
+                    String playerData="";
+                    for(int i =0;i<20;i++){
+                        playerData +=i+"="+this.inventory.getCropAmount(i)+"="+this.inventory.getSeedAmount(i)+"=";
+                    }
+                    for(int i=0;i<32;i++){
+                        playerData+=i+"="+this.land.getState(i)+"="+this.land.getCropID(i)+"="+this.land.getPlantTime(i)+"="+this.land.getWaterLevel(i)+"=";
+                    }
+                    write("player-data=" + playerData);
+                }
                 //Xử lý mua ô đất
                 if (messageSplit[0].equals("buy-farmland")) {
                     int slot = Integer.parseInt(messageSplit[1]);
@@ -207,8 +218,8 @@ public class ServerThread implements Runnable {
                     if (inventoryExecute == 1 && landExecute == 1) {
                         this.inventory.setCropAmount(cropID, newCropAmount);
                         this.land.setCropID(slot, -1);
-                        write("harvest-complete="+slot+"="+newCropAmount);
-                    }else {
+                        write("harvest-complete=" + slot + "=" + newCropAmount);
+                    } else {
                         System.out.println("Lỗi database phần thu hoạch");
                     }
                 }
@@ -218,6 +229,7 @@ public class ServerThread implements Runnable {
                 }
                 //Xử lý thăm nhà
                 if (messageSplit[0].equals("visit")) {
+//                    int guestID = Integer.parseInt(messageSplit[1]);
 
                 }
                 //Xử lý xem bảng xếp hạng
@@ -260,8 +272,7 @@ public class ServerThread implements Runnable {
 
 
     public String getStringFromUser(User user1) {
-        return "" + user1.getUserID() + "=" + user1.getUsername()
-                + "=" + user1.getPassword() + "";
+        return "" + user1.getPlayerName() + "=" + user1.getMoney() + "=" + user1.getGenderSkin() + "=" + user1.getPetID();
     }
 
     public void write(String message) throws IOException {

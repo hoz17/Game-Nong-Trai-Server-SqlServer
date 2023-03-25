@@ -25,20 +25,20 @@ public class Land {
         return slot;
     }
 
-    public int[] getState() {
-        return state;
+    public int getState(int slot) {
+        return state[slot];
     }
 
-    public int[] getCropID() {
-        return cropID;
+    public int getCropID(int slot) {
+        return cropID[slot];
     }
 
-    public Timestamp[] getPlantTime() {
-        return plantTime;
+    public Timestamp getPlantTime(int slot) {
+        return plantTime[slot];
     }
 
-    public int[] getWaterLevel() {
-        return waterLevel;
+    public int getWaterLevel(int slot) {
+        return waterLevel[slot];
     }
 
     public int getLandPrice(int slot) {
