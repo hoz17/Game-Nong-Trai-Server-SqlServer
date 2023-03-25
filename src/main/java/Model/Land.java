@@ -1,17 +1,48 @@
 package Model;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 
 public class Land {
     private int landID;
     private int userID;
-    private int state;
-    private int cropID;
-    private Time plantTime;
-    private int waterLevel;
+    private int slot[] = new int[32];
+    private int state[] = new int[32];
+    private int cropID[] = new int[32];
+    private Timestamp plantTime[] = new Timestamp[32];
+    private int waterLevel[] = new int[32];
+    private int landPrice[] = new int[32];
 
     public int getLandID() {
         return landID;
+    }
+
+    public int getUserID() {
+        return userID;
+    }
+
+    public int[] getSlot() {
+        return slot;
+    }
+
+    public int[] getState() {
+        return state;
+    }
+
+    public int[] getCropID() {
+        return cropID;
+    }
+
+    public Timestamp[] getPlantTime() {
+        return plantTime;
+    }
+
+    public int[] getWaterLevel() {
+        return waterLevel;
+    }
+
+    public int getLandPrice(int slot) {
+        return landPrice[slot];
     }
 
     public void setLandID(int landID) {
@@ -22,40 +53,37 @@ public class Land {
         this.userID = userID;
     }
 
-    public void setState(int state) {
+    public void setState(int slot, int state) {
+        this.state[slot] = state;
+    }
+
+    public void setCropID(int slot, int cropID) {
+        this.cropID[slot] = cropID;
+    }
+
+    public void setPlantTime(int slot, Timestamp plantTime) {
+        this.plantTime[slot] = plantTime;
+    }
+
+    public void setWaterLevel(int slot, int waterLevel) {
+        this.waterLevel[slot] = waterLevel;
+    }
+
+
+    public Land(int userID) {
+        this.userID = userID;
+    }
+
+    public Land(int userID, int[] slot, int[] state, int[] cropID, Timestamp[] plantTime, int[] waterLevel) {
+        this.userID = userID;
+        this.slot = slot;
         this.state = state;
-    }
-
-    public void setCropID(int cropID) {
         this.cropID = cropID;
-    }
-
-    public void setPlantTime(Time plantTime) {
         this.plantTime = plantTime;
-    }
-
-    public void setWaterLevel(int waterLevel) {
         this.waterLevel = waterLevel;
+        landPrice[4] = 500;
+        for (int i = 5; i < 32; i++) {
+            landPrice[i] = landPrice[i - 1] + ((i - 4) * 500);
+        }
     }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public int getState() {
-        return state;
-    }
-
-    public int getCropID() {
-        return cropID;
-    }
-
-    public Time getPlantTime() {
-        return plantTime;
-    }
-
-    public int getWaterLevel() {
-        return waterLevel;
-    }
-
 }

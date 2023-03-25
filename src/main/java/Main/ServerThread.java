@@ -1,6 +1,9 @@
 package Main;
 
-import DAO.UserDAO;
+import DAO.*;
+import Model.Crop;
+import Model.Inventory;
+import Model.Land;
 import Model.User;
 
 import java.io.*;
@@ -8,9 +11,10 @@ import java.net.Socket;
 import java.sql.SQLException;
 
 
-
 public class ServerThread implements Runnable {
     private User user;
+    private Land land;
+    private Inventory inventory;
     private Socket socketOfServer;
     private int clientNumber;
     private BufferedReader is;
@@ -18,6 +22,27 @@ public class ServerThread implements Runnable {
     private boolean isClosed;
     private UserDAO userDAO;
     private String clientIP;
+    private LandDAO landDAO;
+    private InventoryDAO inventoryDAO;
+    private Crop crop;
+    private CropDAO cropDAO;
+    private DAO dao;
+
+    public Land getLand() {
+        return land;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setLand(Land land) {
+        this.land = land;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
 
     public BufferedReader getIs() {
         return is;
@@ -48,6 +73,12 @@ public class ServerThread implements Runnable {
         this.clientNumber = clientNumber;
 //        System.out.println("Server thread number " + clientNumber + " Started");
         userDAO = new UserDAO();
+        landDAO = new LandDAO();
+        inventoryDAO = new InventoryDAO();
+        cropDAO = new CropDAO();
+        dao = new DAO();
+        dao.connection();
+
         isClosed = false;
         //Trường hợp test máy ở server sẽ lỗi do hostaddress là localhost
         if (this.socketOfServer.getInetAddress().getHostAddress().equals("127.0.0.1")) {
@@ -69,6 +100,7 @@ public class ServerThread implements Runnable {
             String message;
             while (!isClosed) {
                 message = is.readLine();
+                System.out.println(message);
                 if (message == null) {
                     break;
                 }
@@ -84,6 +116,9 @@ public class ServerThread implements Runnable {
                     {
                         write("login-success=" + getStringFromUser(user1));
                         this.user = user1;
+                        this.land = landDAO.getPlayerFarmland(this.user.getUserID());
+                        this.inventory = inventoryDAO.getPlayerInventory(this.user.getUserID());
+                        this.crop = cropDAO.getCrop();
 //                        userDAO.updateToOnline(this.user.getID());
 //                        Server.serverThreadBus.boardCast(clientNumber, "chat-server," + user1.getNickname() + " đang online");
 //                        Server.admin.addMessage("[" + user1.getID() + "] " + user1.getNickname() + " đang online");
@@ -94,25 +129,91 @@ public class ServerThread implements Runnable {
 //                    }
                 }
                 //Xử lý đăng kí
-                if(messageSplit[0].equals("register")){
-                    boolean checkdup = userDAO.checkDuplicated(messageSplit[1]);
-                    if(checkdup) write("duplicate-username=");
-                    else{
-                        User userRegister = new User(messageSplit[1], messageSplit[2], messageSplit[3],Integer.parseInt(messageSplit[4]),Integer.parseInt(messageSplit[5]),Integer.parseInt(messageSplit[6]));
+                if (messageSplit[0].equals("register")) {
+                    boolean checkDup = userDAO.checkDuplicated(messageSplit[1]);
+                    if (checkDup) write("duplicate-username=");
+                    else {
+                        User userRegister = new User(messageSplit[1], messageSplit[2], messageSplit[3], Integer.parseInt(messageSplit[4]), Integer.parseInt(messageSplit[5]), Integer.parseInt(messageSplit[6]));
                         userDAO.addUser(userRegister);
-                        User userRegistered = userDAO.verifyUser(userRegister);
-                        this.user = userRegistered;
+                        this.user = userDAO.verifyUser(userRegister);
+                        this.land = landDAO.getPlayerFarmland(this.user.getUserID());
+                        this.inventory = inventoryDAO.getPlayerInventory(this.user.getUserID());
+                        this.crop = cropDAO.getCrop();
                         //userDAO.updateToOnline(this.user.getID());
                         //Server.serverThreadBus.boardCast(clientNumber, "chat-server,"+this.user.getUsername()+" đang online");
                         System.out.println("[" + this.user.getUserID() + "] " + this.user.getUsername() + " đang online");
-                        write("login-success="+getStringFromUser(this.user));
+                        write("login-success=" + getStringFromUser(this.user));
                     }
                 }
-                //
+                //Xử lý mua ô đất
+                if (messageSplit[0].equals("buy-farmland")) {
+                    int slot = Integer.parseInt(messageSplit[1]);
+                    int newMoney = this.user.getMoney() - this.land.getLandPrice(slot);
+                    int execute = landDAO.buyFarmland(this.user.getUserID(), slot);
+                    int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
+                    if (execute == 1 && moneyExecute == 1) {
+                        write("buy-farmland-complete=" + slot + "=" + newMoney);
+                        this.land.setState(slot, 1);
+                        this.user.setMoney(newMoney);
+                    } else {
+                        System.out.println("Lỗi phần mua đất");
+                    }
+                }
+                //Xử lý mua hạt giống
+                if (messageSplit[0].equals("buy-seed")) {
+                    int cropID = Integer.parseInt(messageSplit[1]);
+                    int newSeedAmount = Integer.parseInt(messageSplit[2]) + this.inventory.getSeedAmount(cropID);
+                    int newMoney = this.user.getMoney() - (Integer.parseInt(messageSplit[2]) * this.crop.getCropBuyPrice(cropID));
+                    int execute = inventoryDAO.buySeed(this.user.getUserID(), cropID, newSeedAmount);
+                    int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
+                    if (execute == 1 && moneyExecute == 1) {
+                        this.user.setMoney(newMoney);
+                        this.inventory.setSeedAmount(cropID, newSeedAmount);
+                        write("buy-seed-complete=" + cropID + "=" + newSeedAmount + "=" + newMoney);
+                    } else {
+                        System.out.println("Lỗi database phần mua hạt giống");
+                    }
+                }
+                //Xử lý bán rau củ
+                if (messageSplit[0].equals("sell-crop")) {
+                    
+                }
+                //Xử lý trồng cây
+                if (messageSplit[0].equals("plant")) {
 
+                }
+                //Xử lý tưới nước
+                if (messageSplit[0].equals("water")) {
 
+                }
+                //Xử lý thu hoạch
+                if (messageSplit[0].equals("harvest")) {
 
+                }
+                //Xử lý phá cây
+                if (messageSplit[0].equals("trample")) {
 
+                }
+                //Xử lý thăm nhà
+                if (messageSplit[0].equals("visit")) {
+
+                }
+                //Xử lý xem bảng xếp hạng
+                if (messageSplit[0].equals("view-leaderboard")) {
+
+                }
+                //Xử lý chat thế giới
+                if (messageSplit[0].equals("world-chat")) {
+
+                }
+                //Xử lý xem danh sách thăm nhà
+                if (messageSplit[0].equals("view-visit-list")) {
+
+                }
+                //Xử lý mở túi đồ
+                if (messageSplit[0].equals("open-inventory")) {
+
+                }
             }
         } catch (IOException e) {
             //Thay đổi giá trị cờ để thoát luồng

@@ -85,4 +85,14 @@ public class User {
         this.genderSkin = genderSkin;
         this.petID = petID;
     }
+
+    public User(int userID, String username, String password, String playerName, int money, int genderSkin, int petID) {
+        this.userID = userID;
+        this.username = username;
+        this.password = password;
+        this.playerName = playerName;
+        this.money = money;
+        this.genderSkin = genderSkin;
+        this.petID = petID;
+    }
 }

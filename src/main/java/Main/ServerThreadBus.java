@@ -50,7 +50,7 @@ public class ServerThreadBus {
 
     public void sendMessageToUserID(int id, String message) {
         for (ServerThread serverThread : Server.serverThreadBus.getListServerThreads()) {
-            if (serverThread.getUser().getUser_ID() == id) {
+            if (serverThread.getUser().getUserID() == id) {
                 try {
                     serverThread.write(message);
                     break;
@@ -63,7 +63,7 @@ public class ServerThreadBus {
 
     public ServerThread getServerThreadByUserID(int ID) {
         for (int i = 0; i < Server.serverThreadBus.getLength(); i++) {
-            if (Server.serverThreadBus.getListServerThreads().get(i).getUser().getUser_ID() == ID) {
+            if (Server.serverThreadBus.getListServerThreads().get(i).getUser().getUserID() == ID) {
                 return Server.serverThreadBus.listServerThreads.get(i);
             }
         }

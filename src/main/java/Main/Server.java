@@ -1,5 +1,7 @@
 package Main;
 
+import Model.Crop;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,6 +22,7 @@ public class Server {
         System.out.println("Server is waiting to accept user...");
         int clientNumber = 0;
         ID_room = 100;
+
 
         try {
             listener = new ServerSocket(7777);

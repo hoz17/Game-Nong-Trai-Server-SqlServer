@@ -22,7 +22,7 @@ public class UserDAO extends DAO {
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return new User(rs.getString(1), rs.getString(2), rs.getString(3), rs.getInt(4), rs.getInt(5), rs.getInt(6));
+                return new User(rs.getInt(1),rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7));
             }
 
         } catch (SQLException e) {
@@ -41,7 +41,6 @@ public class UserDAO extends DAO {
             preparedStatement.setInt(4, user.getMoney());
             preparedStatement.setInt(5, user.getGenderSkin());
             preparedStatement.setInt(6, user.getPetID());
-            System.out.println(preparedStatement);
             preparedStatement.executeUpdate();
             preparedStatement = conn.prepareStatement("SELECT Player_ID FROM player WHERE Username=?");
             preparedStatement.setString(1, user.getUsername());
@@ -59,16 +58,17 @@ public class UserDAO extends DAO {
     public void addLand(User user) {
         try {
             for (int i = 0; i < 32; i++) {
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO land VALUES(?,?,?,?,?");
+                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO land VALUES(?,?,?,?,?,?)");
                 preparedStatement.setInt(1, user.getUserID());
+                preparedStatement.setInt(2, i);
                 if (i < 4) {
-                    preparedStatement.setInt(2, 1);
+                    preparedStatement.setInt(3, 1);
                 } else {
-                    preparedStatement.setInt(2, 0);
+                    preparedStatement.setInt(3, 0);
                 }
-                preparedStatement.setInt(3, -1);
-                preparedStatement.setTimestamp(4, null);
-                preparedStatement.setInt(5, 0);
+                preparedStatement.setInt(4, -1);
+                preparedStatement.setTimestamp(5, null);
+                preparedStatement.setInt(6, 0);
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
@@ -92,6 +92,19 @@ public class UserDAO extends DAO {
         }
     }
 
+    public int updateMoney(int userID, int amount) {
+        int execute = 0;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE player SET Money=? WHERE Player_ID=?");
+            preparedStatement.setInt(1,amount);
+            preparedStatement.setInt(2,userID);
+            execute = preparedStatement.executeUpdate();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return execute;
+    }
+
     public boolean checkDuplicated(String username) {
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM player WHERE Username = ?");
@@ -101,9 +114,7 @@ public class UserDAO extends DAO {
             if (rs.next()) {
                 return true;
             }
-
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return false;
