@@ -164,7 +164,7 @@ public class ServerThread implements Runnable {
                     int cropID = Integer.parseInt(messageSplit[1]);
                     int newSeedAmount = Integer.parseInt(messageSplit[2]) + this.inventory.getSeedAmount(cropID);
                     int newMoney = this.user.getMoney() - (Integer.parseInt(messageSplit[2]) * this.crop.getCropBuyPrice(cropID));
-                    int inventoryExecute = inventoryDAO.buySeed(this.user.getUserID(), cropID, newSeedAmount);
+                    int inventoryExecute = inventoryDAO.updateSeed(this.user.getUserID(), cropID, newSeedAmount);
                     int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
                     if (inventoryExecute == moneyExecute) {
                         this.user.setMoney(newMoney);
@@ -179,7 +179,7 @@ public class ServerThread implements Runnable {
                     int cropID = Integer.parseInt(messageSplit[1]);
                     int newCropAmount = this.inventory.getCropAmount(cropID) - Integer.parseInt(messageSplit[2]);
                     int newMoney = this.user.getMoney() + (Integer.parseInt(messageSplit[2]) * this.crop.getCropSellPrice(cropID));
-                    int inventoryExecute = inventoryDAO.sellCrop(this.user.getUserID(), cropID, newCropAmount);
+                    int inventoryExecute = inventoryDAO.updateCrop(this.user.getUserID(), cropID, newCropAmount);
                     int moneyExecute = userDAO.updateMoney(this.user.getUserID(), newMoney);
                     if (inventoryExecute == moneyExecute) {
                         this.user.setMoney(newMoney);
@@ -199,7 +199,10 @@ public class ServerThread implements Runnable {
                 }
                 //Xử lý thu hoạch
                 if (messageSplit[0].equals("harvest")) {
-
+                    int cropID = Integer.parseInt(messageSplit[1]);
+                    int slot = Integer.parseInt(messageSplit[2]);
+                    int newCropAmount = this.inventory.getCropAmount(cropID) + 1;
+                    int inventoryExecute = inventoryDAO.updateCrop(this.user.getUserID(), cropID, newCropAmount);
                 }
                 //Xử lý phá cây
                 if (messageSplit[0].equals("trample")) {

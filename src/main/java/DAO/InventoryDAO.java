@@ -32,7 +32,7 @@ public class InventoryDAO extends DAO {
         return null;
     }
 
-    public int buySeed(int playerID, int cropID, int amount) {
+    public int updateSeed(int playerID, int cropID, int amount) {
         int execute = 0;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE inventory SET Seed_amount=? WHERE Player_ID=? AND Crop_ID=?");
@@ -46,7 +46,7 @@ public class InventoryDAO extends DAO {
         return execute;
     }
 
-    public int sellCrop(int playerID, int cropID, int amount) {
+    public int updateCrop(int playerID, int cropID, int amount) {
         int execute = 0;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE inventory SET Crop_amount = ? WHERE Player_ID = ? AND Crop_ID = ?");
