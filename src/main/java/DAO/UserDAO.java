@@ -151,7 +151,9 @@ public class UserDAO extends DAO {
     public int plantTree(int userID, int cropID, int slot){
         int exe =0;
         try{
+
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = ?  WHERE Player_ID = ? AND Slot = ?");
+
             preparedStatement.setInt(1,cropID);
             preparedStatement.setInt(2,userID);
             preparedStatement.setInt(3,slot);
@@ -159,7 +161,6 @@ public class UserDAO extends DAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return exe;
     }
 

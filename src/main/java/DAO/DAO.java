@@ -17,7 +17,7 @@ public class DAO {
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
         ds.setPassword("123");
-        ds.setServerName("hoz");
+        ds.setServerName("DARJEELING\\SQLEXPRESS");
         ds.setPortNumber(1433);
         ds.setDatabaseName("gamenongtrai");
         ds.setEncrypt(false);
