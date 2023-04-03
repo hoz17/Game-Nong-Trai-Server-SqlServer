@@ -47,17 +47,87 @@ public class LandDAO extends DAO {
         return null;
     }
 
-    public int harvest(int playerID, int slot){
+    public int harvest(int playerID, int slot) {
         int execute = 0;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = ? WHERE Player_ID = ? AND Slot = ?");
             preparedStatement.setInt(1, -1);
-            preparedStatement.setInt(2,playerID);
-            preparedStatement.setInt(3,slot);
+            preparedStatement.setInt(2, playerID);
+            preparedStatement.setInt(3, slot);
             execute = preparedStatement.executeUpdate();
-        }catch  (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return execute;
+    }
+
+    public int waterPlant(int userID, int waterLevel, int slot) {
+        int execute = 0;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Water_level = ? WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1, waterLevel);
+            preparedStatement.setInt(2, userID);
+            preparedStatement.setInt(3, slot);
+            execute = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return execute;
+    }
+
+    public int plantCrop(int userID, Timestamp plantTime, int cropID, int slot) {
+        int exe = 0;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = ?, Plant_time = ? , Water_level = 0 WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1, cropID);
+            preparedStatement.setTimestamp(2, plantTime);
+            preparedStatement.setInt(3, userID);
+            preparedStatement.setInt(4, slot);
+            exe = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return exe;
+    }
+
+    public int trample(int userID, int slot) {
+        int exe = 0;
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = -1  WHERE Player_ID = ? AND Slot = ?");
+            preparedStatement.setInt(1, userID);
+            preparedStatement.setInt(2, slot);
+            exe = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return exe;
+    }
+
+    public Land getGuestIsland(int guestID) {
+        int slot[] = new int[32];
+        int state[] = new int[32];
+        int cropID[] = new int[32];
+        Timestamp plantTime[] = new Timestamp[32];
+        int waterLevel[] = new int[32];
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM land WHERE Player_ID = ?");
+            preparedStatement.setInt(1, guestID);
+            ResultSet rs = preparedStatement.executeQuery();
+            for (int i = 0; i < 32 && rs.next(); i++) {
+                slot[i] = rs.getInt(3);
+                state[i] = rs.getInt(4);
+                cropID[i] = rs.getInt(5);
+                plantTime[i] = rs.getTimestamp(6);
+                waterLevel[i] = rs.getInt(7);
+            }
+            rs.close();
+            return new Land(guestID, slot, state, cropID, plantTime, waterLevel);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

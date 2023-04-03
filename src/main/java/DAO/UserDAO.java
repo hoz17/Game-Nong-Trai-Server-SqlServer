@@ -22,7 +22,7 @@ public class UserDAO extends DAO {
             System.out.println(preparedStatement);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt(1),rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7));
+                return new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getInt(5), rs.getInt(6), rs.getInt(7));
             }
 
         } catch (SQLException e) {
@@ -96,10 +96,10 @@ public class UserDAO extends DAO {
         int execute = 0;
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE player SET Money=? WHERE Player_ID=?");
-            preparedStatement.setInt(1,amount);
-            preparedStatement.setInt(2,userID);
+            preparedStatement.setInt(1, amount);
+            preparedStatement.setInt(2, userID);
             execute = preparedStatement.executeUpdate();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return execute;
@@ -119,34 +119,34 @@ public class UserDAO extends DAO {
         }
         return false;
     }
-    public int waterPlant(int userID, int waterLevel, int slot ){
-        int execute =0;
-        try{
-            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Water_level = ? WHERE Player_ID = ? AND Slot = ?");
-            preparedStatement.setInt(1,waterLevel);
-            preparedStatement.setInt(2,userID);
-            preparedStatement.setInt(3,slot);
-            execute = preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
 
-        return execute;
+    public String getLeaderBoard() {
+        String output = "";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT TOP(5) Player_ID, Player_name, Money from player ORDER BY Money DESC");
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                output += rs.getInt(1) + "=" + rs.getString(2) + "=" + rs.getInt(3) + "=";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return output;
     }
 
-    public int trample(int userID, int cropID, int slot){
-        int exe =0;
-        try{
-            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = -1 WHERE Player_ID = ? AND Slot = ?");
-            preparedStatement.setInt(1,cropID);
-            preparedStatement.setInt(2,userID);
-            preparedStatement.setInt(3,slot);
-            exe = preparedStatement.executeUpdate();
+    public String getVisitList(String input) {
+        String output = "";
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT Player_ID, Player_name FROM player WHERE Player_name like '%?%'");
+            preparedStatement.setString(1, input);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                output += rs.getInt(1) + rs.getString(2);
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-
-        return exe;
+        return output;
     }
     public int plantTree(int userID, int cropID, int slot){
         int exe =0;
@@ -163,7 +163,4 @@ public class UserDAO extends DAO {
         }
         return exe;
     }
-
-    
-
 }

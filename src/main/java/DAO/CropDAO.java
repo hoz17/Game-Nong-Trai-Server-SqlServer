@@ -13,16 +13,16 @@ public class CropDAO extends DAO {
     }
 
     public Crop getCrop() {
-        int cropID[] = new int[20];
-        String cropName[] = new String[20];
-        int cropGrowTime[] = new int[20];
-        int cropBuyPrice[] = new int[20];
-        int cropSellPrice[] = new int[20];
-        int waterLevel[] = new int[20];
+        int[] cropID = new int[21];
+        String[] cropName = new String[21];
+        int[] cropGrowTime = new int[21];
+        int[] cropBuyPrice = new int[21];
+        int[] cropSellPrice = new int[21];
+        int[] waterLevel = new int[21];
         try {
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM crop");
             ResultSet rs = preparedStatement.executeQuery();
-            for (int i = 0; i < 20 && rs.next(); i++) {
+            for (int i = 0; i < 21 && rs.next(); i++) {
                 cropID[i] = rs.getInt(1);
                 cropName[i] = rs.getString(2);
                 cropGrowTime[i] = rs.getInt(3);
@@ -31,7 +31,7 @@ public class CropDAO extends DAO {
                 waterLevel[i] = rs.getInt(6);
             }
             rs.close();
-            return new Crop(cropID, cropName, cropGrowTime, cropBuyPrice, cropSellPrice, waterLevel);
+            return new Crop(cropID,cropName, cropGrowTime, cropBuyPrice, cropSellPrice, waterLevel);
         } catch (SQLException e) {
             e.printStackTrace();
         }
