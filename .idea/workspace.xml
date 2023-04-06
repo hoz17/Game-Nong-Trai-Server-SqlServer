@@ -6,14 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="17a837aa-1b4b-4946-b57c-8ed0faccfa3d" name="Changes" comment="create project">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DAO/DAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DAO/DAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" afterDir="false" />
-
-      <change beforePath="$PROJECT_DIR$/src/main/java/DAO/CropDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DAO/CropDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/DAO/LandDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DAO/LandDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/DAO/UserDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main/ServerThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main/ServerThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Model/Land.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Model/Land.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,8 +49,8 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;inlay.hints&quot;
   }
 }</component>
-  <component name="RunManager" selected="Application.Unnamed">
-    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="Main.Server" />
       <module name="Game-Nong-Trai-Server-SqlServer" />
       <method v="2">
@@ -67,7 +63,7 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Application.Unnamed" />
+      <item itemvalue="Application.Main" />
       <item itemvalue="JAR Application.Unnamed" />
     </list>
   </component>

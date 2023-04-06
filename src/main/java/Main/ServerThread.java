@@ -103,7 +103,7 @@ public class ServerThread implements Runnable {
             String message;
             while (!isClosed) {
                 message = is.readLine();
-                System.out.println(message);
+                System.out.println("Receive: "+message);
                 if (message == null) {
                     break;
                 }
@@ -320,7 +320,7 @@ public class ServerThread implements Runnable {
 
     public void write(String message) throws IOException {
         os.write(message);
-        System.out.println("send "+message);
+        System.out.println("Send: "+message);
         os.newLine();
         os.flush();
     }

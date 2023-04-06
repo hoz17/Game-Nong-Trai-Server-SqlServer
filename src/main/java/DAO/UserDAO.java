@@ -33,8 +33,7 @@ public class UserDAO extends DAO {
 
     public void addUser(User user) {
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO player\n"
-                    + "VALUES(?,?,?,?,?,?)");
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO player VALUES(?,?,?,?,?,?)");
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getPlayerName());
@@ -58,7 +57,7 @@ public class UserDAO extends DAO {
     public void addLand(User user) {
         try {
             for (int i = 0; i < 32; i++) {
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO land VALUES(?,?,?,?,?,?)");
+                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO land VALUES(?,?,?,null,?,?)");
                 preparedStatement.setInt(1, user.getUserID());
                 preparedStatement.setInt(2, i);
                 if (i < 4) {
@@ -66,9 +65,9 @@ public class UserDAO extends DAO {
                 } else {
                     preparedStatement.setInt(3, 0);
                 }
-                preparedStatement.setInt(4, -1);
-                preparedStatement.setTimestamp(5, null);
-                preparedStatement.setInt(6, 0);
+//                preparedStatement.setInt(4, null);
+                preparedStatement.setTimestamp(4, null);
+                preparedStatement.setInt(5, 0);
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {

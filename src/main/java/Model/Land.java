@@ -8,7 +8,7 @@ public class Land {
     private int userID;
     private int slot[] = new int[32];
     private int state[] = new int[32];
-    private int cropID[] = new int[32];
+    private Integer cropID[] = new Integer[32];
     private Timestamp plantTime[] = new Timestamp[32];
     private int waterLevel[] = new int[32];
     private int landPrice[] = new int[32];
@@ -29,7 +29,7 @@ public class Land {
         return state[slot];
     }
 
-    public int getCropID(int slot) {
+    public Integer getCropID(int slot) {
         return cropID[slot];
     }
 
@@ -57,7 +57,7 @@ public class Land {
         this.state[slot] = state;
     }
 
-    public void setCropID(int slot, int cropID) {
+    public void setCropID(int slot, Integer cropID) {
         this.cropID[slot] = cropID;
     }
 
@@ -74,7 +74,7 @@ public class Land {
         this.userID = userID;
     }
 
-    public Land(int userID, int[] slot, int[] state, int[] cropID, Timestamp[] plantTime, int[] waterLevel) {
+    public Land(int userID, int[] slot, int[] state, Integer[] cropID, Timestamp[] plantTime, int[] waterLevel) {
         this.userID = userID;
         this.slot = slot;
         this.state = state;
