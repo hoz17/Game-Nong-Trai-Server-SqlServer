@@ -37,7 +37,7 @@ public class UserDAO extends DAO {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getPassword());
             preparedStatement.setString(3, user.getPlayerName());
-            preparedStatement.setInt(4, user.getMoney());
+            preparedStatement.setInt(4, 1000);
             preparedStatement.setInt(5, user.getGenderSkin());
             preparedStatement.setInt(6, user.getPetID());
             preparedStatement.executeUpdate();
@@ -119,13 +119,28 @@ public class UserDAO extends DAO {
         return false;
     }
 
+    public boolean checkDuplicatedName(String playerName) {
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM player WHERE Player_name = ?");
+            preparedStatement.setString(1, playerName);
+            System.out.println(preparedStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public String getLeaderBoard() {
         String output = "";
         try {
-            PreparedStatement preparedStatement = conn.prepareStatement("SELECT TOP(5) Player_ID, Player_name, Money from player ORDER BY Money DESC");
+            PreparedStatement preparedStatement = conn.prepareStatement("SELECT TOP 10 Player_name, Money from player ORDER BY Money DESC ");
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                output += rs.getInt(1) + "=" + rs.getString(2) + "=" + rs.getInt(3) + "=";
+                output += rs.getString(1) + "=" + rs.getInt(2) + "=";
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -146,20 +161,5 @@ public class UserDAO extends DAO {
             e.printStackTrace();
         }
         return output;
-    }
-    public int plantTree(int userID, int cropID, int slot){
-        int exe =0;
-        try{
-
-            PreparedStatement preparedStatement = conn.prepareStatement("UPDATE land SET Crop_ID = ?  WHERE Player_ID = ? AND Slot = ?");
-
-            preparedStatement.setInt(1,cropID);
-            preparedStatement.setInt(2,userID);
-            preparedStatement.setInt(3,slot);
-            exe = preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return exe;
     }
 }

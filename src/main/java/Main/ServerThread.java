@@ -103,7 +103,7 @@ public class ServerThread implements Runnable {
             String message;
             while (!isClosed) {
                 message = is.readLine();
-                System.out.println("Receive: "+message);
+                System.out.println("Receive: " + message);
                 if (message == null) {
                     break;
                 }
@@ -114,14 +114,13 @@ public class ServerThread implements Runnable {
                     User user1 = userDAO.verifyUser(new User(messageSplit[1], messageSplit[2]));
                     if (user1 == null)
                         write("wrong-user=" + messageSplit[1] + "=" + messageSplit[2]);
-                    else
-//                        if (!user1.getIsOnline() && !userDAO.checkIsBanned(user1))
-                    {
+                    else {
                         write("login-success=" + getStringFromUser(user1));
+                        checkDuplicate(user1.getUserID(), this.clientNumber);
                         this.user = user1;
                         this.land = landDAO.getPlayerFarmland(this.user.getUserID());
                         this.inventory = inventoryDAO.getPlayerInventory(this.user.getUserID());
-
+//
 //                        userDAO.updateToOnline(this.user.getID());
 //                        Server.serverThreadBus.boardCast(clientNumber, "chat-server," + user1.getNickname() + " đang online");
 //                        Server.admin.addMessage("[" + user1.getID() + "] " + user1.getNickname() + " đang online");
@@ -135,6 +134,7 @@ public class ServerThread implements Runnable {
                 if (messageSplit[0].equals("register")) {
                     boolean checkDup = userDAO.checkDuplicated(messageSplit[1]);
                     if (checkDup) write("duplicate-username=");
+                    else if (userDAO.checkDuplicatedName(messageSplit[3])) write("duplicate-playername=");
                     else {
                         User userRegister = new User(messageSplit[1], messageSplit[2], messageSplit[3], Integer.parseInt(messageSplit[4]), Integer.parseInt(messageSplit[5]), Integer.parseInt(messageSplit[6]));
                         userDAO.addUser(userRegister);
@@ -205,7 +205,7 @@ public class ServerThread implements Runnable {
                     if (inventoryExecute == 1 && moneyExecute == 1) {
                         this.user.setMoney(newMoney);
                         this.inventory.setCropAmount(cropID, newCropAmount);
-                        write("sell-seed-complete=" + cropID + "=" + newCropAmount + "=" + newMoney);
+                        write("sell-crop-complete=" + cropID + "=" + newCropAmount + "=" + newMoney);
                     } else {
                         System.out.println("Lỗi database phần bán rau củ");
                     }
@@ -222,6 +222,7 @@ public class ServerThread implements Runnable {
                         this.land.setCropID(slot, cropID);
                         this.land.setPlantTime(slot, newPlantTime);
                         this.inventory.setSeedAmount(cropID, newSeedAmount);
+                        this.land.setWaterLevel(slot, 0);
                         write("plant-complete=" + slot + "=" + cropID + "=" + newPlantTime + "=" + newSeedAmount);
                     } else {
                         System.out.println("Lỗi database phần trồng cây");
@@ -279,18 +280,19 @@ public class ServerThread implements Runnable {
                 if (messageSplit[0].equals("view-leaderboard")) {
                     write("leaderboard=" + userDAO.getLeaderBoard());
                 }
-                //Xử lý chat thế giới
-                if (messageSplit[0].equals("world-chat")) {
-                    Server.serverThreadBus.boardCast(this.clientNumber, "chat-message=" + messageSplit[1]);
-                }
                 //Xử lý xem danh sách thăm nhà
                 if (messageSplit[0].equals("view-visit-list")) {
                     write("visit-list=" + userDAO.getVisitList(messageSplit[1]));
                 }
-                //Xử lý mở túi đồ
-//                if (messageSplit[0].equals("open-inventory")) {
-//
-//                }
+                //Xử lý chat thế giới
+                if (messageSplit[0].equals("world-chat")) {
+                    Server.serverThreadBus.mutilCastSend("chat-message=" + messageSplit[1] + "=" + messageSplit[2]);
+                }
+                if (messageSplit[0].equals("send-logout")) {
+                    write("logout=0=");
+                    clearData(this);
+
+                }
             }
         } catch (IOException e) {
             //Thay đổi giá trị cờ để thoát luồng
@@ -320,8 +322,30 @@ public class ServerThread implements Runnable {
 
     public void write(String message) throws IOException {
         os.write(message);
-        System.out.println("Send: "+message);
+        System.out.println("Send: " + message);
         os.newLine();
         os.flush();
+    }
+
+    public void checkDuplicate(int userID, int clientNumber) {
+        if (!Server.serverThreadBus.getListServerThreads().isEmpty())
+            for (ServerThread serverThread : Server.serverThreadBus.getListServerThreads()) {
+                if (serverThread.getClientNumber() != clientNumber)
+                    if (serverThread.user != null)
+                        if (serverThread.getUser().getUserID() == userID) {
+                            try {
+                                serverThread.write("logout=1=");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            clearData(serverThread);
+                        }
+            }
+    }
+
+    public void clearData(ServerThread serverThread) {
+        serverThread.user = null;
+        serverThread.land = null;
+        serverThread.inventory = null;
     }
 }
