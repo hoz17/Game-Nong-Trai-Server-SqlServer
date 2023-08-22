@@ -15,9 +15,9 @@ public class DAO {
 
     public static void connection() {
         SQLServerDataSource ds = new SQLServerDataSource();
-        ds.setUser("sa");
-        ds.setPassword("123");
-        ds.setServerName("hoz");
+        ds.setUser("user");
+        ds.setPassword("pass");
+        ds.setServerName("servername");
         ds.setPortNumber(1433);
         ds.setDatabaseName("gamenongtrai");
         ds.setEncrypt(false);
